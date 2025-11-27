@@ -22,6 +22,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     
+    Route::get('/dashboard/cetak', [DashboardController::class, 'cetakDashboard'])->name('dashboard.cetak');
     // Halaman Manajemen Gabungan
     Route::get('/manajemen', [ManajemenController::class, 'index'])->name('manajemen.index');
 
@@ -35,6 +36,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('warga', WargaController::class)->except(['index', 'create', 'store']);
 
     // Data Keluarga (Hanya untuk aksi detail, hapus, cetak, dll)
+    Route::get('/manajemen/keluarga/cetak', [ManajemenController::class, 'cetakDataKeluarga'])->name('manajemen.keluarga.cetak');
     Route::get('/keluarga/{keluarga}/cetak', [KeluargaController::class, 'cetakKK'])->name('keluarga.cetak');
     Route::post('/keluarga/{keluarga}/add-member', [KeluargaController::class, 'addMember'])->name('keluarga.addMember');
     Route::post('/keluarga', [KeluargaController::class, 'store'])->name('keluarga.store'); // Tetap butuh 'store' untuk form
@@ -43,6 +45,7 @@ Route::middleware('auth')->group(function () {
     // Manajemen IPL
     Route::get('/ipl', [IplController::class, 'index'])->name('ipl.index');
     Route::post('/ipl/generate-tagihan', [IplController::class, 'generateTagihan'])->name('ipl.generate');
+    Route::delete('/ipl/batalkan-tagihan', [IplController::class, 'batalkanTagihan'])->name('ipl.batalkanTagihan');
     Route::patch('/ipl/{iuran}/bayar', [IplController::class, 'tandaiLunas'])->name('ipl.bayar');
     Route::patch('/ipl/{iuran}/batalkan', [IplController::class, 'batalkanLunas'])->name('ipl.batalkan');
     Route::get('/ipl/cetak', [IplController::class, 'cetakIpl'])->name('ipl.cetak');
@@ -53,8 +56,20 @@ Route::middleware('auth')->group(function () {
     Route::delete('/laporan/pengeluaran/{pengeluaran}', [IplController::class, 'destroyPengeluaran'])->name('pengeluaran.destroy');
     Route::get('/laporan/cetak', [IplController::class, 'cetakLaporan'])->name('laporan.cetak');
 
-    // RUTE UNTUK JURNAL KEGIATAN
-    Route::resource('/kegiatan', KegiatanController::class)->except([ 'edit', 'update']);
+    // Manajemen Kegiatan
+Route::get('/kegiatan/cetak', [KegiatanController::class, 'cetakKegiatan'])
+    ->name('kegiatan.cetak');
+Route::get('/kegiatan/{kegiatan}/cetak', [KegiatanController::class, 'cetakLaporan'])
+    ->name('kegiatan.cetak');
+
+// ✅ Hapus Foto Single – HARUS di atas resource
+Route::delete('/kegiatan/{kegiatan}/foto/{foto}', [KegiatanController::class, 'deleteFoto'])
+    ->name('kegiatan.foto.destroy');
+
+// ✅ Resource route untuk kegiatan
+Route::resource('kegiatan', KegiatanController::class);
+
+
 });
 
 require __DIR__.'/auth.php';

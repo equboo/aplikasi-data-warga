@@ -8,38 +8,29 @@ use PDF;
 
 class WargaController extends Controller
 {
+    /**
+     * NOTE: Method index() sudah tidak digunakan karena digantikan oleh ManajemenController.
+     */
     public function index(Request $request)
     {
-        $query = Warga::query();
-
-        if ($request->filled('jenis_kelamin') && $request->jenis_kelamin != 'semua') {
-            $query->where('jenis_kelamin', $request->jenis_kelamin);
-        }
-
-        if ($request->filled('search')) {
-            $searchTerm = $request->search;
-            $query->where(function($q) use ($searchTerm) {
-                $q->where('nama_lengkap', 'like', '%' . $searchTerm . '%')
-                  ->orWhere('nik', 'like', '%' . $searchTerm . '%')
-                  ->orWhere('nomor_kk', 'like', '%' . $searchTerm . '%')
-                  ->orWhere('alamat', 'like', '%' . $searchTerm . '%');
-            });
-        }
-
-        $wargas = $query->orderBy('nama_lengkap', 'asc')->paginate(15);
-        
-        return view('manajemen.index', compact('wargas'));
+        // Redirect ke halaman manajemen baru
+        return redirect()->route('manajemen.index');
     }
 
+    /**
+     * Menampilkan form untuk mengedit data warga.
+     */
     public function edit(Warga $warga)
     {
         return view('warga.edit', compact('warga'));
     }
 
+    /**
+     * Memperbarui data yang ada di database.
+     */
     public function update(Request $request, Warga $warga)
     {
         $request->validate([
-            // Validasi Data Keluarga & Alamat
             'nomor_kk' => 'required|digits:16',
             'kepala_keluarga' => 'required|string|max:255',
             'alamat' => 'required|string',
@@ -51,8 +42,6 @@ class WargaController extends Controller
             'kode_pos' => 'required|string|max:5',
             'provinsi' => 'required|string',
             'status_rumah' => 'required|string',
-
-            // Validasi Data Individu
             'nik' => 'required|digits:16|unique:wargas,nik,' . $warga->id,
             'nama_lengkap' => 'required|string|max:255',
             'jenis_kelamin' => 'required',
@@ -86,9 +75,12 @@ class WargaController extends Controller
                  'status_rumah' => $request->status_rumah,
              ]);
 
-        return redirect()->route('manajemen.index')->with('success', 'Data warga berhasil diperbarui dan data keluarga telah disinkronkan.');
+        return redirect()->route('manajemen.index')->with('success', 'Data warga berhasil diperbarui.');
     }
 
+    /**
+     * Menghapus data dari database.
+     */
     public function destroy(Warga $warga)
     {
         $warga->delete();
@@ -96,14 +88,19 @@ class WargaController extends Controller
         return redirect()->route('manajemen.index')->with('success', 'Data warga berhasil dihapus.');
     }
 
+    /**
+     * Membuat dan mengunduh file PDF berisi data warga sesuai filter.
+     */
     public function downloadPDF(Request $request)
     {
         $query = Warga::query();
 
+        // Filter Jenis Kelamin
         if ($request->filled('jenis_kelamin') && $request->jenis_kelamin != 'semua') {
             $query->where('jenis_kelamin', $request->jenis_kelamin);
         }
 
+        // Filter Pencarian
         if ($request->filled('search')) {
             $searchTerm = $request->search;
             $query->where(function($q) use ($searchTerm) {
@@ -114,6 +111,24 @@ class WargaController extends Controller
             });
         }
 
+        // ===== LOGIKA FILTER USIA BARU DITAMBAHKAN DI SINI =====
+        if ($request->filled('age_group') && $request->age_group != 'semua') {
+            $age_group = $request->age_group;
+            
+            if ($age_group == '0-5') {
+                $query->whereRaw('TIMESTAMPDIFF(YEAR, tanggal_lahir, CURDATE()) BETWEEN 0 AND 5');
+            } elseif ($age_group == '6-12') {
+                $query->whereRaw('TIMESTAMPDIFF(YEAR, tanggal_lahir, CURDATE()) BETWEEN 6 AND 12');
+            } elseif ($age_group == '13-19') {
+                $query->whereRaw('TIMESTAMPDIFF(YEAR, tanggal_lahir, CURDATE()) BETWEEN 13 AND 19');
+            } elseif ($age_group == '20-59') {
+                $query->whereRaw('TIMESTAMPDIFF(YEAR, tanggal_lahir, CURDATE()) BETWEEN 20 AND 59');
+            } elseif ($age_group == '60+') {
+                $query->whereRaw('TIMESTAMPDIFF(YEAR, tanggal_lahir, CURDATE()) >= 60');
+            }
+        }
+        // ===== AKHIR LOGIKA FILTER USIA =====
+
         $wargas = $query->orderBy('nama_lengkap', 'asc')->get();
         $data = [
             'title' => 'Daftar Warga RT.06/RW.07',
@@ -121,9 +136,8 @@ class WargaController extends Controller
             'wargas' => $wargas
         ];
 
-        $pdf = PDF::loadView('warga.pdf', $data);
-        $pdf->setPaper('a4', 'landscape');
+        $pdf = PDF::loadView('warga.pdf', $data)->setPaper('a4', 'portrait');
 
-        return $pdf->download('daftar-warga-rt06-rw07.pdf');
+        return $pdf->stream('daftar-warga-rt06-rw07.pdf');
     }
 }

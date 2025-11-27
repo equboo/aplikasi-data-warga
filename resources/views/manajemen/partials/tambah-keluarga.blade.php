@@ -56,7 +56,7 @@
         </div>
         <div>
             <x-input-label for="kode_pos" :value="__('Kode Pos')" />
-            <x-text-input id="kode_pos" class="block mt-1 w-full" type="text" name="kode_pos" :value="old('kode_pos', '17155')" required />
+            <x-text-input id="kode_pos" class="block mt-1 w-full" type="text" name="kode_pos" :value="old('kode_pos', '17156')" required />
         </div>
         <div>
             <x-input-label for="provinsi" :value="__('Provinsi')" />

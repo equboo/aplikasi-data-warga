@@ -9,5 +9,10 @@ class KegiatanFoto extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['path', 'kegiatan_id'];
+    protected $fillable = ['kegiatan_id', 'path', 'type'];
+
+    public function kegiatan()
+    {
+        return $this->belongsTo(Kegiatan::class);
+    }
 }

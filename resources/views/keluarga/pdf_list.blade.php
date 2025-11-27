@@ -4,11 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>{{ $title }}</title>
     <style>
-        body { 
-            font-family: 'Times New Roman', Times, serif; 
-            font-size: 10pt;
-        }
-
+        body { font-family: 'Times New Roman', Times, serif; font-size: 11pt; margin: 30px; }
         /* KOP SURAT */
         .kop-surat {
             width: 100%;
@@ -49,44 +45,12 @@
             margin-top: 2px;
         }
 
-        /* JUDUL DOKUMEN */
-        .document-title {
-            text-align: center;
-            margin-top: 25px;
-            margin-bottom: 20px;
-        }
-        .document-title h3 {
-            font-size: 14pt;
-            text-decoration: underline;
-            margin: 0;
-            font-weight: bold;
-        }
-        .document-title p {
-            font-size: 10pt;
-            margin-top: 2px;
-        }
-
-        /* TABEL UTAMA */
-        .main-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        .main-table th, .main-table td {
-            border: 1px solid #333;
-            padding: 5px;
-            text-align: left;
-        }
-        .main-table thead th {
-            background-color: #e9ecef;
-            font-weight: bold;
-            text-align: center;
-        }
-        .main-table tbody tr:nth-child(even) {
-            background-color: #f8f9fa;
-        }
-        .main-table td.center {
-            text-align: center;
-        }
+        .document-title { text-align: center; margin-bottom: 20px; }
+        .document-title h3 { font-size: 14pt; text-decoration: underline; margin: 0; }
+        .document-title p { font-size: 10pt; margin-top: 2px; }
+        .main-table { width: 100%; border-collapse: collapse; }
+        .main-table th, .main-table td { border: 1px solid #333; padding: 5px; text-align: left; }
+        .main-table thead th { background-color: #e9ecef; text-align: center; }
     </style>
 </head>
 <body>
@@ -107,38 +71,31 @@
     <div class="double-line"></div>
 
     <div class="document-title">
-        <h3>DAFTAR SELURUH WARGA</h3>
+        <h3>DAFTAR KEPALA KELUARGA</h3>
         <p>Dicetak pada: {{ $date }}</p>
     </div>
-
     <table class="main-table">
         <thead>
             <tr>
                 <th style="width: 5%;">No</th>
-                <th style="width: 15%;">NIK</th>
-                <th>Nama Lengkap</th>
-                <th style="width: 10%;">Jenis Kelamin</th>
-                <th style="width: 15%;">Tgl. Lahir</th>
-                <th style="width: 10%;">Agama</th>
-                <th class="width: 10%;">Usia</th>
+                <th style="width: 20%;">No. KK</th>
+                <th>Nama Kepala Keluarga</th>
+                <th>Alamat</th>
+                <th style="width: 20%;">Status Rumah</th>
             </tr>
         </thead>
         <tbody>
-            @forelse($wargas as $warga)
+            @forelse($kepalaKeluargas as $keluarga)
                 <tr>
-                    <td class="center">{{ $loop->iteration }}</td>
-                    <td>{{ $warga->nik }}</td>
-                    <td>{{ $warga->nama_lengkap }}</td>
-                    <td>{{ $warga->jenis_kelamin }}</td>
-                    <td class="center">{{ \Carbon\Carbon::parse($warga->tanggal_lahir)->format('d-m-Y') }}</td>
-                    <td>{{ $warga->agama }}</td>
-                    <td class="center">
-                    {{ \Carbon\Carbon::parse($warga->tanggal_lahir)->age }} Tahun
-                </td>
+                    <td style="text-align: center;">{{ $loop->iteration }}</td>
+                    <td>{{ $keluarga->nomor_kk }}</td>
+                    <td>{{ $keluarga->kepala_keluarga }}</td>
+                    <td>{{ $keluarga->alamat }}</td>
+                    <td>{{ $keluarga->status_rumah }}</td>
                 </tr>
             @empty
                 <tr>
-                    <td colspan="7" class="center">Data tidak ditemukan sesuai filter yang diterapkan.</td>
+                    <td colspan="5" style="text-align: center;">Data tidak ditemukan.</td>
                 </tr>
             @endforelse
         </tbody>

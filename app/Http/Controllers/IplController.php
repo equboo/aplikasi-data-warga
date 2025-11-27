@@ -44,6 +44,10 @@ class IplController extends Controller
         $kepalaKeluargas = $query->orderBy('nama_lengkap')->get();
 
         $iurans = Iuran::with('warga')->where('bulan', $bulan_status)->where('tahun', $tahun_status)->get()->keyBy('warga_id');
+        $kepalaKeluargas = $kepalaKeluargas->sortBy(function ($item) use ($iurans) {
+        $iuran = $iurans->get($item->id);
+        return ($iuran && $iuran->status == 'Lunas' ? 1 : 0) . '-' . $item->nama_lengkap;
+        });
         $totalLunas = Iuran::where('bulan', $bulan_status)->where('tahun', $tahun_status)->where('status', 'Lunas')->count();
         $totalKeluarga = Warga::where('hubungan_keluarga', 'Kepala Keluarga')->count();
         $totalBelumLunas = $totalKeluarga - $totalLunas;
@@ -126,7 +130,7 @@ class IplController extends Controller
     {
         $bulan = (int)$request->input('bulan', now()->month);
         $tahun = (int)$request->input('tahun', now()->year);
-        $jumlahTagihan = 100000;
+        $jumlahTagihan = 80000;
 
         if (Iuran::where('bulan', $bulan)->where('tahun', $tahun)->exists()) {
             return redirect()->route('ipl.index', ['bulan' => $bulan, 'tahun' => $tahun])->with('error', 'Tagihan untuk periode ini sudah pernah dibuat.');
@@ -262,6 +266,24 @@ class IplController extends Controller
 
         // PERBAIKAN: Redirect ke halaman utama IPL dan buka tab laporan
         return redirect()->route('ipl.index', ['tab' => 'laporan'])->with('success', 'Data pengeluaran berhasil ditambahkan.');
+    }
+
+    public function batalkanTagihan(Request $request)
+    {
+        $bulan = (int)$request->input('bulan', now()->month);
+        $tahun = (int)$request->input('tahun', now()->year);
+
+        // Hapus HANYA tagihan yang statusnya "Belum Lunas"
+        $deletedCount = Iuran::where('bulan', $bulan)
+                            ->where('tahun', $tahun)
+                            ->where('status', 'Belum Lunas')
+                            ->delete();
+
+        if ($deletedCount == 0) {
+            return redirect()->route('ipl.index', ['bulan' => $bulan, 'tahun' => $tahun])->with('error', 'Tidak ada tagihan "Belum Lunas" yang bisa dibatalkan untuk periode ini.');
+        }
+
+        return redirect()->route('ipl.index', ['bulan' => $bulan, 'tahun' => $tahun])->with('success', "Tagihan yang Belum Lunas ($deletedCount tagihan) untuk periode ini berhasil dibatalkan.");
     }
 
         public function cetakLaporan(Request $request)

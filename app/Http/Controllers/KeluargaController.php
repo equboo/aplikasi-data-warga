@@ -121,7 +121,7 @@ class KeluargaController extends Controller
         ]));
         
         return redirect()->route('keluarga.show', $keluarga->id)
-                         ->with('success', 'Informasi keluarga berhasil diperbarui untuk semua anggota.');
+                        ->with('success', 'Informasi keluarga berhasil diperbarui untuk semua anggota.');
     }
 
     /**

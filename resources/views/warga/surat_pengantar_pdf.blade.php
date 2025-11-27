@@ -4,50 +4,112 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>Surat Pengantar - {{ $warga->nama_lengkap }}</title>
     <style>
-        body { font-family: 'Times New Roman', Times, serif; font-size: 12px; line-height: 1.5; }
-        
-        /* ===== BAGIAN KOP SURAT YANG DIPERBAIKI ===== */
-        .kop-surat { width: 100%; border-collapse: collapse; border-bottom: 3px solid black; }
-        .kop-surat td { vertical-align: middle; }
-        .kop-surat .logo { width: 75px; height: auto; }
-        .kop-surat .kop-text { text-align: center; line-height: 1.2; }
-        .kop-surat .kop-text h1 { font-size: 18px; font-weight: bold; margin: 0; padding: 0; }
-        .kop-surat .kop-text h2 { font-size: 16px; font-weight: bold; margin: 0; padding: 0; }
-        .kop-surat .kop-text p { font-size: 10px; margin: 0; padding: 0; }
-        .double-line { border-bottom: 1px solid black; height: 1px; margin-top: 2px; }
-        /* ===== AKHIR BAGIAN KOP SURAT ===== */
+        @page { margin: 40px 50px 40px 50px; }
 
-        .judul-surat { text-align: center; margin-top: 25px; margin-bottom: 20px; }
-        .judul-surat h3 { text-decoration: underline; font-size: 14px; margin: 0; font-weight: bold; }
-        .judul-surat p { margin: 0; font-size: 11px; }
-        .isi-surat { margin-top: 20px; }
-        .isi-surat table { width: 100%; }
+        body { 
+            font-family: 'Times New Roman', Times, serif; 
+            font-size: 12px; 
+            line-height: 1.5; 
+            margin: 0;
+        }
+
+        /* === KOP SURAT === */
+        .kop-container {
+            width: 100%;
+            margin-bottom: 5px;
+        }
+        .kop-surat {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .kop-surat td {
+            vertical-align: middle;
+        }
+        .logo {
+            width: 85px;
+            height: auto;
+        }
+        .kop-text {
+            text-align: center;
+            line-height: 1.4;
+        }
+        .kop-text h1 {
+            font-size: 16pt;
+            font-weight: bold;
+            margin: 0;
+            text-transform: uppercase;
+        }
+        .kop-text h2 {
+            font-size: 14pt;
+            font-weight: bold;
+            margin: 0;
+            text-transform: uppercase;
+        }
+        .kop-text p {
+            font-size: 11pt;
+            margin: 2px 0;
+        }
+
+        /* === GARIS PEMBATAS KOP === */
+        .kop-line {
+            width: 100%;
+            border: none;
+            border-top: 3px double black;
+            height: 3px;
+            margin-top: 3px;
+            margin-bottom: 10px;
+        }
+
+        /* === JUDUL & ISI SURAT === */
+        .judul-surat { 
+            text-align: center; 
+            margin-top: 10px; 
+            margin-bottom: 20px; 
+        }
+        .judul-surat h3 { 
+            text-decoration: underline; 
+            font-size: 14px; 
+            margin: 0; 
+            font-weight: bold; 
+        }
+        .judul-surat p { 
+            margin: 0; 
+            font-size: 11px; 
+        }
+        .isi-surat { margin-top: 15px; }
+        .isi-surat table { width: 100%; border-collapse: collapse; }
         .isi-surat table td { padding: 2px 0; vertical-align: top; }
-        .penutup { margin-top: 20px; }
+
+        /* === PENUTUP & TTD === */
+        .penutup { margin-top: 15px; }
         .ttd { margin-top: 40px; }
-        .ttd table { width: 100%; }
-        .ttd table td { text-align: center; width: 50%; }
+        .ttd table { width: 100%; border-collapse: collapse; }
+        .ttd table td { text-align: center; width: 50%; vertical-align: top; }
     </style>
 </head>
 <body>
 
-    <table class="kop-surat">
-        <tr>
-            <td style="width: 15%; text-align: center;">
-                <img src="{{ public_path('images/logo-kotabekasi.png') }}" alt="Logo" class="logo">
-            </td>
-            <td style="width: 70%;" class="kop-text">
-                <h1>RUKUN TETANGGA 06 / RUKUN WARGA 07</h1>
-                <h2>PERUMAHAN VILLA PADURENAN INDAH 2</h2>
-                <p>Kelurahan Padurenan, Kecamatan Mustika Jaya – KOTA BEKASI</p>
-                <p>Sekretariat : Blok C5 No. 4, No. Tlp : 0812-8758-5428</p>
-            </td>
-            <td style="width: 15%;">
+    <!-- === KOP SURAT === -->
+    <div class="kop-container">
+        <table class="kop-surat">
+            <tr>
+                <td style="width: 15%; text-align: center;">
+                    <img src="{{ public_path('images/logo-kotabekasi.png') }}" alt="Logo" class="logo">
                 </td>
-        </tr>
-    </table>
-    <div class="double-line"></div>
+                <td style="width: 70%;" class="kop-text">
+                    <h1>PEMERINTAH KOTA BEKASI</h1>
+                    <h2>RUKUN TETANGGA 006 / RUKUN WARGA 007</h2>
+                    <p><strong>KELURAHAN PADURENAN, KECAMATAN MUSTIKA JAYA</strong></p>
+                    <p><strong>KOTA BEKASI 17157</strong></p>
+                    <p><b>Sekretariat :</b> Villa Padurenan Indah 2 Blok C No. 5 Telp. 089611492332</p>
+                </td>
+                <td style="width: 15%;"></td>
+            </tr>
+        </table>
+        <hr class="kop-line">
+    </div>
 
+    <!-- === ISI SURAT === -->
     <div class="judul-surat">
         <h3>SURAT PENGANTAR</h3>
         <p>Nomor: {{ $nomor_surat }}</p>

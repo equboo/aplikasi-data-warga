@@ -155,7 +155,7 @@
 </div>
 
 <div class="flex items-center justify-end mt-8 border-t pt-6">
-    <a href="{{ route('warga.index') }}" class="text-sm text-gray-600 hover:text-gray-900 rounded-md">
+    <a href="{{ route('manajemen.index') }}" class="text-sm text-gray-600 hover:text-gray-900 rounded-md">
         Batal
     </a>
     <x-primary-button class="ms-4">
